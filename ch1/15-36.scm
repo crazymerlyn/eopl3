@@ -90,3 +90,14 @@
         ((pred (car lst)) 0)
         ((list-index pred (cdr lst)) => (lambda (i) (+ i 1)))
         (else #f)))
+
+
+; every?: (SchemeVal -> boolean) -> boolean
+; Usage: (every? pred lst) = If pred returns false for any value in lst
+;        then return false else true
+(define (every? pred lst)
+  (if (null? lst)
+      #t
+      (if (not (pred (car lst)))
+          #f
+          (every? pred (cdr lst)))))
