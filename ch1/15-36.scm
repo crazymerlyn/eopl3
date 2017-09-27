@@ -121,8 +121,20 @@
 
 
 ; flatten: S-List -> S-List
-; Usage (flatten slist) = slist with all inner parentheses removed
+; Usage: (flatten slist) = slist with all inner parentheses removed
 (define (flatten slist)
   (cond ((null? slist) '())
         ((symbol? (car slist)) (cons (car slist) (flatten (cdr slist))))
         (else (append (flatten (car slist)) (flatten (cdr slist))))))
+
+
+; merge: ListOf(Int) x ListOf(Int) -> ListOf(Int)
+; Usage: (merge loi1 loi2) loi1 and loi2 are in increasing order =
+;        list containing elements of both loi1 and loi2 in increasing order
+(define (merge loi1 loi2)
+  (cond ((null? loi1) loi2)
+        ((null? loi2) loi1)
+        ((< (car loi1) (car loi2))
+         (cons (car loi1) (merge (cdr loi1) loi2)))
+        (else
+          (cons (car loi2) (merge loi1 (cdr loi2))))))
