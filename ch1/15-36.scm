@@ -152,3 +152,21 @@
                    (sort (cdr res)))))))
 (define (split-at lst n)
   (cons (take lst n) (drop lst n)))
+
+
+(define (sort/predicate pred loi)
+  (cond ((null? loi) '())
+        ((null? (cdr loi)) loi)
+        (else
+          (let* ((n (length loi))
+                 (res (split-at loi (quotient n 2))))
+            (merge/predicate pred
+                             (sort/predicate pred (car res))
+                             (sort/predicate pred (cdr res)))))))
+(define (merge/predicate pred loi1 loi2)
+  (cond ((null? loi1) loi2)
+        ((null? loi2) loi1)
+        ((pred (car loi1) (car loi2))
+         (cons (car loi1) (merge/predicate pred (cdr loi1) loi2)))
+        (else
+          (cons (car loi2) (merge/predicate pred loi1 (cdr loi2))))))
