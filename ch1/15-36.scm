@@ -204,3 +204,17 @@
         ((= n (car bst)) '())
         ((< n (car bst)) (cons 'left (path n (cadr bst))))
         (else (cons 'right (path n (caddr bst))))))
+
+
+(define (number-leaves tree)
+  (define (count-leaves tree)
+    (if (leaf? tree) 1
+        (+ (count-leaves (lson tree))
+           (count-leaves (rson tree)))))
+  (let loop ((tree tree) (n 0))
+   (if (leaf? tree)
+       (leaf n)
+       (let ((counter (count-leaves (lson tree))))
+        (interior-node (contents-of tree)
+                       (loop (lson tree) n)
+                       (loop (rson tree) (+ n counter)))))))
