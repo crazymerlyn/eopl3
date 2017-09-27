@@ -6,3 +6,6 @@
         (else (error "No binding for" var))))
 
 (define (empty-env? env) (null? env))
+
+(define (has-binding? env var)
+  (if (assoc var env) #t #f))
