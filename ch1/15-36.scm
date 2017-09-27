@@ -58,3 +58,14 @@
               (count-occurences x (cdr slist)))
           (+ (count-occurences x (car slist))
              (count-occurences x (cdr slist))))))
+
+
+; product: ListOf(Symbol) x ListOf(Symbol) -> ListOf(ListOf(Symbol))
+; Usage: (product sos1 sos2) = A list of 2-lists that represents the cartesian
+;        product of sos1 and sos2
+(define (product sos1 sos2)
+  (concatenate
+    (map (lambda (s1)
+           (map (lambda (s2) (list s1 s2))
+                sos2))
+         sos1)))
