@@ -34,3 +34,14 @@
         (swapper s1 s2 sexp)))
   (map (lambda (sexp) (swapper-exp s1 s2 sexp))
        slist))
+
+
+; list-set: List x Int x SchemeVal -> List
+; (list-set lst n x) = lst with nth element replaced with x
+(define (list-set lst n x)
+  (let loop ((cur-lst lst) (cur-n n))
+   (if (null? cur-lst)
+       (report-list-too-short lst n)
+       (if (zero? cur-n)
+           (cons x (cdr cur-lst))
+           (cons (car cur-lst) (loop (cdr cur-lst) (- cur-n 1)))))))
