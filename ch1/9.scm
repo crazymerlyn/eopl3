@@ -1,0 +1,6 @@
+(define (remove s los)
+  (if (null? los)
+      '()
+      (if (eq? s (car los))
+          (remove s (cdr los))
+          (cons (car los) (remove s (cdr los))))))
