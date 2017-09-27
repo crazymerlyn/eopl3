@@ -110,3 +110,11 @@
   (cond ((null? lst) #f)
         ((pred (car lst)) #t)
         (else (exists? pred (cdr lst)))))
+
+
+; up: List -> List
+; Usage: (up ((x (y)) z a (a b))) = (x (y) z a a b)
+(define (up lst)
+  (cond ((null? lst) '())
+        ((pair? (car lst)) (append (car lst) (up (cdr lst))))
+        (else (cons (car lst) (up (cdr lst))))))
