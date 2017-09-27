@@ -4,3 +4,5 @@
 (define (apply-env env var)
   (cond ((assoc var env) => cdr)
         (else (error "No binding for" var))))
+
+(define (empty-env? env) (null? env))
