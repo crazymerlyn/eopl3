@@ -69,3 +69,14 @@
            (map (lambda (s2) (list s1 s2))
                 sos2))
          sos1)))
+
+
+; filter-in: (SchemeVal -> boolean) x List -> List
+; Usage: (filter-in pred lst) = lst with only elements for which
+;        pred returns a truthy value
+(define (filter-in pred lst)
+  (if (null? lst)
+      '()
+      (if (pred (car lst))
+          (cons (car lst) (filter-in pred (cdr lst)))
+          (filter-in pred (cdr lst)))))
