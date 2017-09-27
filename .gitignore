@@ -5,3 +5,7 @@
 *.scm~
 *.scm#*
 .#*.scm
+
+*.bci
+*.com
+*.bin
