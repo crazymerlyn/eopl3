@@ -218,3 +218,12 @@
         (interior-node (contents-of tree)
                        (loop (lson tree) n)
                        (loop (rson tree) (+ n counter)))))))
+
+
+(define (g first rest)
+  (cons first (map (lambda (el) (cons (+ 1 (car el)) (cdr el)))
+                   rest)))
+(define (number-elements lst)
+  (if (null? lst)
+      '()
+      (g (list 0 (car lst)) (number-elements (cdr lst)))))
