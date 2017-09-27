@@ -80,3 +80,13 @@
       (if (pred (car lst))
           (cons (car lst) (filter-in pred (cdr lst)))
           (filter-in pred (cdr lst)))))
+
+
+; list-index: (SchemeVal -> boolean) x List -> Int + #f
+; Usage: (list-index pred lst) -> returns the first index for which
+;        pred returns a truthy. Returns #f if no such index exists
+(define (list-index pred lst)
+  (cond ((null? lst) #f)
+        ((pred (car lst)) 0)
+        ((list-index pred (cdr lst)) => (lambda (i) (+ i 1)))
+        (else #f)))
