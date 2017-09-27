@@ -118,3 +118,11 @@
   (cond ((null? lst) '())
         ((pair? (car lst)) (append (car lst) (up (cdr lst))))
         (else (cons (car lst) (up (cdr lst))))))
+
+
+; flatten: S-List -> S-List
+; Usage (flatten slist) = slist with all inner parentheses removed
+(define (flatten slist)
+  (cond ((null? slist) '())
+        ((symbol? (car slist)) (cons (car slist) (flatten (cdr slist))))
+        (else (append (flatten (car slist)) (flatten (cdr slist))))))
