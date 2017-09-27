@@ -197,3 +197,10 @@
        (interior-node (contents-of tree)
                       (loop (lson tree) (+ n 1))
                       (loop (rson tree) (+ n 1))))))
+
+
+(define (path n bst)
+  (cond ((null? bst) '())
+        ((= n (car bst)) '())
+        ((< n (car bst)) (cons 'left (path n (cadr bst))))
+        (else (cons 'right (path n (caddr bst))))))
