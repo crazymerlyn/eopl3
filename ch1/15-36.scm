@@ -188,3 +188,12 @@
       (interior-node (contents-of tree)
                      (double-tree (lson tree))
                      (double-tree (rson tree)))))
+
+
+(define (mark-leaves-with-red-depth tree)
+  (let loop ((tree tree) (n -1))
+   (if (leaf? tree)
+       (leaf n)
+       (interior-node (contents-of tree)
+                      (loop (lson tree) (+ n 1))
+                      (loop (rson tree) (+ n 1))))))
