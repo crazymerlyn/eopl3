@@ -182,3 +182,11 @@
   (if (leaf? tree)
       tree
       (car tree)))
+
+
+(define (double-tree tree)
+  (if (leaf? tree)
+      (leaf (* 2 (contents-of tree)))
+      (interior-node (contents-of tree)
+                     (double-tree (lson tree))
+                     (double-tree (rson tree)))))
