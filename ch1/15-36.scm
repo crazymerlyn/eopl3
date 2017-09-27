@@ -45,3 +45,16 @@
        (if (zero? cur-n)
            (cons x (cdr cur-lst))
            (cons (car cur-lst) (loop (cdr cur-lst) (- cur-n 1)))))))
+
+
+; count-occurences: Symbol x S-List -> Int
+; (count-occurences x slist) = no. of occurences of x in slist
+(define (count-occurences x slist)
+  (if (null? slist)
+      0
+      (if (symbol? (car slist))
+          (if (eq? x (car slist))
+              (+ 1 (count-occurences x (cdr slist)))
+              (count-occurences x (cdr slist)))
+          (+ (count-occurences x (car slist))
+             (count-occurences x (cdr slist))))))
