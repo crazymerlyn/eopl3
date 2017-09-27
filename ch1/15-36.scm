@@ -170,3 +170,15 @@
          (cons (car loi1) (merge/predicate pred (cdr loi1) loi2)))
         (else
           (cons (car loi2) (merge/predicate pred loi1 (cdr loi2))))))
+
+
+(define (leaf n) n)
+(define (interior-node symbol left right)
+  (list symbol left right))
+(define (leaf? tree) (number? tree))
+(define (lson tree) (cadr tree))
+(define (rson tree) (caddr tree))
+(define (contents-of tree)
+  (if (leaf? tree)
+      tree
+      (car tree)))
