@@ -92,7 +92,7 @@
         (else #f)))
 
 
-; every?: (SchemeVal -> boolean) -> boolean
+; every?: (SchemeVal -> boolean) x List -> boolean
 ; Usage: (every? pred lst) = If pred returns false for any value in lst
 ;        then return false else true
 (define (every? pred lst)
@@ -101,3 +101,12 @@
       (if (not (pred (car lst)))
           #f
           (every? pred (cdr lst)))))
+
+
+; exists?: (SchemeVal -> boolean) x List -> boolean
+; Usage: (exists? pred lst) = If pred returns truthy for any element of lst
+;        then return true else return false
+(define (exists? pred lst)
+  (cond ((null? lst) #f)
+        ((pred (car lst)) #t)
+        (else (exists? pred (cdr lst)))))
