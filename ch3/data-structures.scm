@@ -3,7 +3,11 @@
   (num-val
     (num number?))
   (bool-val
-    (bool boolean?)))
+    (bool boolean?))
+  (pair-val
+    (first expval?)
+    (second expval?))
+  (null-val))
 
 (define (expval->bool val)
   (cases expval val
@@ -14,3 +18,14 @@
   (cases expval val
          (num-val (num) num)
          (else (error "invalid expval -- expval->num" val))))
+
+(define (expval->pair val)
+  (cases expval val
+         (pair-val (first second) (cons first second))
+         (else (error "invalid listval -- expval->list" val))))
+
+
+(define (expval-is-null? val)
+  (cases expval val
+         (null-val () #t)
+         (else #f)))
