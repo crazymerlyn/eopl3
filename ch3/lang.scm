@@ -1,4 +1,6 @@
+(load "../r5rs.scm")
 (load "../sllgen.scm")
+(load "../define-datatype.scm")
 
 (define the-lexical-spec
   '((whitespace (whitespace) skip)
@@ -34,5 +36,6 @@
 
     ))
 
+(sllgen:make-define-datatypes the-lexical-spec the-grammar)
 (define scan&parse
   (sllgen:make-string-parser the-lexical-spec the-grammar))
