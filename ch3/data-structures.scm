@@ -48,9 +48,9 @@
     (val expval?)
     (env environment?))
   (extend-env-rec
-    (p-name identifier?)
+    (p-names list?)
     (b-vars list?)
-    (body expression?)
+    (bodies list?)
     (env environment?)))
 
 (define (apply-env env var)
@@ -60,10 +60,10 @@
            (if (eq? var saved-var)
                saved-val
                (apply-env saved-env var)))
-         (extend-env-rec (p-name b-vars body saved-env)
-           (if (eq? var p-name)
-               (proc-val b-vars body env)
-               (apply-env saved-env var)))))
+         (extend-env-rec (p-names b-vars bodies saved-env)
+           (cond ((assoc var (map list p-names b-vars bodies))
+                  => (lambda (struct) (proc-val (cadr struct) (caddr struct) env)))
+               (else (apply-env saved-env var))))))
 
 (define (extend-env* vars vals env)
   (cond ((and (null? vars) (null? vals)) env)

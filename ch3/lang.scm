@@ -60,7 +60,7 @@
       let-exp)   
 
     (expression
-      ("letrec" identifier "(" (separated-list identifier ",") ")" "=" expression "in" expression)
+      ("letrec" (arbno identifier "(" (separated-list identifier ",") ")" "=" expression) "in" expression)
       letrec-exp)
 
     (expression

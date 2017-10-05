@@ -37,9 +37,9 @@
                             (map (lambda (exp1) (value-of exp1 env))
                                  vals)
                             env)))
-    (letrec-exp (proc-name vars proc-body letrec-body)
+    (letrec-exp (proc-names vars proc-bodies letrec-body)
       (value-of letrec-body
-                (extend-env-rec proc-name vars proc-body env)))
+                (extend-env-rec proc-names vars proc-bodies env)))
     (proc-exp (vars body)
       (proc-val vars body env))
     (call-exp (rator rands)
