@@ -49,7 +49,7 @@
     (env environment?))
   (extend-env-rec
     (p-name identifier?)
-    (b-var identifier?)
+    (b-vars list?)
     (body expression?)
     (env environment?)))
 
@@ -60,9 +60,9 @@
            (if (eq? var saved-var)
                saved-val
                (apply-env saved-env var)))
-         (extend-env-rec (p-name b-var body saved-env)
+         (extend-env-rec (p-name b-vars body saved-env)
            (if (eq? var p-name)
-               (proc-val (list b-var) body env)
+               (proc-val b-vars body env)
                (apply-env saved-env var)))))
 
 (define (extend-env* vars vals env)

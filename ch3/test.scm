@@ -2,6 +2,6 @@
 
 
 (define (test)
-  (run "letrec times4 (x) = if zero?(x) then 0 else -((times4 -(x,1)), -4)
-        in (times4 100)"))
+  (run "letrec times (x, y) = if zero?(x) then 0 else -((times -(x,1) y), -(0,y))
+        in (times 10 10)"))
 
