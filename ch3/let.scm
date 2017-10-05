@@ -1,5 +1,4 @@
 (load "lang.scm")
-(load "../ch2/5.scm") ; environment
 (load "data-structures.scm")
 
 (define the-global-environment (empty-env))
@@ -38,6 +37,9 @@
                             (map (lambda (exp1) (value-of exp1 env))
                                  vals)
                             env)))
+    (letrec-exp (proc-name var proc-body letrec-body)
+      (value-of letrec-body
+                (extend-env-rec proc-name var proc-body env)))
     (proc-exp (vars body)
       (proc-val vars body env))
     (call-exp (rator rands)

@@ -2,5 +2,6 @@
 
 
 (define (test)
-  (run "let x=proc (y, z) -(y, z) in (x 12 1)"))
+  (run "letrec times4 (x) = if zero?(x) then 0 else -((times4 -(x,1)), -4)
+        in (times4 100)"))
 

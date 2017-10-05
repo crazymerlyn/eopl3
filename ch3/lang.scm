@@ -60,6 +60,10 @@
       let-exp)   
 
     (expression
+      ("letrec" identifier "(" identifier ")" "=" expression "in" expression)
+      letrec-exp)
+
+    (expression
       ("proc" "(" (separated-list identifier ",") ")" expression)
       proc-exp)
 
