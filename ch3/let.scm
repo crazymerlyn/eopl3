@@ -32,10 +32,11 @@
       (if (expval->bool (value-of exp1 env))
           (value-of exp2 env)
           (value-of exp3 env)))
-    (let-exp (var exp1 body)
+    (let-exp (vars vals body)
       (value-of body
-                (extend-env var
-                            (value-of exp1 env)
+                (extend-env* vars
+                            (map (lambda (exp1) (value-of exp1 env))
+                                 vals)
                             env)))))
 
 (define (value-of-program pgm)
