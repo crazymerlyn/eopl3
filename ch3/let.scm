@@ -14,6 +14,8 @@
         (-
           (expval->num (value-of exp1 env))
           (expval->num (value-of exp2 env)))))
+    (list-exp (exps) (list->pairval
+                       (map (lambda (ex) (value-of ex env)) exps)))
     (cons-exp (exp1 exp2)
       (pair-val (value-of exp1 env)
                 (value-of exp2 env)))

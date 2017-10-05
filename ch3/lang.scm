@@ -24,6 +24,11 @@
       ("zero?" "(" expression ")")
       zero?-exp)
 
+
+    (expression
+      ("list" "(" (separated-list expression ",") ")")
+      list-exp)
+
     (expression
       ("cons" "(" expression "," expression ")")
       cons-exp)

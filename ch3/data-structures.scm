@@ -24,6 +24,11 @@
          (pair-val (first second) (cons first second))
          (else (error "invalid listval -- expval->list" val))))
 
+(define (list->pairval vals)
+  (if (null? vals)
+      (null-val)
+      (pair-val (car vals) (list->pairval (cdr vals)))))
+
 
 (define (expval-is-null? val)
   (cases expval val
