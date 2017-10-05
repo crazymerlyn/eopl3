@@ -59,6 +59,14 @@
       ("let" (arbno identifier "=" expression) "in" expression)
       let-exp)   
 
+    (expression
+      ("proc" "(" (separated-list identifier ",") ")" expression)
+      proc-exp)
+
+    (expression
+      ("(" expression (arbno expression) ")")
+      call-exp)
+
     ))
 
 (sllgen:make-define-datatypes the-lexical-spec the-grammar)

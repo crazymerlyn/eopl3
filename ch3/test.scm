@@ -2,5 +2,5 @@
 
 
 (define (test)
-  (run "let x=1 y=2 z = 3 in list(x, y, z)"))
+  (run "let x=proc (y, z) -(y, z) in (x 12 1)"))
 

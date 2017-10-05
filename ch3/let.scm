@@ -37,7 +37,20 @@
                 (extend-env* vars
                             (map (lambda (exp1) (value-of exp1 env))
                                  vals)
-                            env)))))
+                            env)))
+    (proc-exp (vars body)
+      (proc-val vars body env))
+    (call-exp (rator rands)
+      (apply-procedure
+        (value-of rator env)
+        (map (lambda (rand) (value-of rand env))
+             rands)))))
+
+(define (apply-procedure proc vals)
+  (cases expval proc
+         (proc-val (vars body env)
+                   (value-of body (extend-env* vars vals env)))
+         (else (error "Invalid expval -- apply-procedure" proc))))
 
 (define (value-of-program pgm)
   (cases program pgm

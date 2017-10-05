@@ -7,6 +7,10 @@
   (pair-val
     (first expval?)
     (second expval?))
+  (proc-val
+    (vars list?)
+    (body expression?)
+    (env list?))
   (null-val))
 
 (define (expval->bool val)
