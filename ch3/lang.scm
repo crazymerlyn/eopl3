@@ -54,10 +54,15 @@
       if-exp)
 
     (expression (identifier) var-exp)
+    (expression ("%lexref" number) nameless-var-exp)
 
     (expression
       ("let" (arbno identifier "=" expression) "in" expression)
       let-exp)   
+
+    (expression
+      ("%let" (arbno expression) "in" expression)
+      nameless-let-exp)   
 
     (expression
       ("letrec" (arbno identifier "(" (separated-list identifier ",") ")" "=" expression) "in" expression)
@@ -66,6 +71,10 @@
     (expression
       ("proc" "(" (separated-list identifier ",") ")" expression)
       proc-exp)
+
+    (expression
+      ("%lexproc" expression)
+      nameless-proc-exp)
 
     (expression
       ("(" expression (arbno expression) ")")

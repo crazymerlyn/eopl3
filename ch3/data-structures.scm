@@ -8,9 +8,8 @@
     (first expval?)
     (second expval?))
   (proc-val
-    (vars list?)
     (body expression?)
-    (env environment?))
+    (env nameless-environment?))
   (null-val))
 
 (define (expval->bool val)
@@ -72,4 +71,21 @@
                 (car vars) (car vals)
                 (extend-env* (cdr vars) (cdr vals) env)))))
 
+
+(define (empty-senv) '())
+(define (extend-senv var senv) (cons var senv))
+(define (extend-senv* vars senv) (append vars senv))
+(define (apply-senv senv var)
+  (cond ((null? senv) (error "Unbound var" var))
+        ((eq? var (car senv)) 0)
+        (else (+ 1 (apply-senv (cdr senv) var)))))
+
+
+(define (nameless-environment? x)
+  ((list-of expval?) x))
+
+(define (empty-nameless-env) '())
+(define (extend-namesless-env val env) (cons val env))
+(define (extend-namesless-env* vals env) (append vals env))
+(define (apply-namesless-env env n) (list-ref env n))
 

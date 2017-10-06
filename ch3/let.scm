@@ -1,13 +1,13 @@
 (load "lang.scm")
 (load "data-structures.scm")
 
-(define the-global-environment (empty-env))
+(define the-global-environment (empty-nameless-env))
 
 (define (value-of exp env)
   (cases
     expression exp
     (const-exp (num) (num-val num))
-    (var-exp (var) (apply-env env var))
+    (nameless-var-exp (n) (apply-namesless-env env n))
     (diff-exp (exp1 exp2)
       (num-val
         (-
@@ -31,32 +31,88 @@
       (if (expval->bool (value-of exp1 env))
           (value-of exp2 env)
           (value-of exp3 env)))
-    (let-exp (vars vals body)
+    (nameless-let-exp (vals body)
       (value-of body
-                (extend-env* vars
-                            (map (lambda (exp1) (value-of exp1 env))
-                                 vals)
-                            env)))
+                (extend-namesless-env*
+                  (map (lambda (exp1) (value-of exp1 env))
+                        vals)
+                  env)))
     (letrec-exp (proc-names vars proc-bodies letrec-body)
       (value-of letrec-body
                 (extend-env-rec proc-names vars proc-bodies env)))
-    (proc-exp (vars body)
-      (proc-val vars body env))
+    (nameless-proc-exp (body)
+      (proc-val body env))
     (call-exp (rator rands)
       (apply-procedure
         (value-of rator env)
         (map (lambda (rand) (value-of rand env))
-             rands)))))
+             rands)))
+    (else (error "Invalid translated expression" exp))))
 
 (define (apply-procedure proc vals)
   (cases expval proc
-         (proc-val (vars body env)
-                   (value-of body (extend-env* vars vals env)))
+         (proc-val (body env)
+                   (value-of body (extend-namesless-env* vals env)))
          (else (error "Invalid expval -- apply-procedure" proc))))
 
 (define (value-of-program pgm)
   (cases program pgm
          (a-program (exp1) (value-of exp1 the-global-environment))))
 
+(define (translation-of-program pgm)
+  (cases program pgm
+         (a-program (exp1)
+           (a-program
+             (translation-of exp1 (empty-senv))))))
+
+(define (translation-of exp senv)
+  (cases
+    expression exp
+    (const-exp (num) (const-exp num))
+    (var-exp (var) (nameless-var-exp (apply-senv senv var)))
+    (diff-exp (exp1 exp2)
+      (diff-exp (translation-of exp1 senv)
+                (translation-of exp2 senv)))
+    (list-exp (exps)
+              (list-exp
+                (map (lambda (exp1) (translation-of exp1 senv))
+                     exps)))
+    (cons-exp (exp1 exp2)
+      (cons-exp (translation-of exp1 senv)
+                (translation-of exp2 senv)))
+    (car-exp (exp1)
+      (car-exp (translation-of exp1 senv)))
+    (cdr-exp (exp1)
+      (cdr-exp (translation-of exp1 senv)))
+    (null?-exp (exp1)
+      (null?-exp (translation-of exp1 senv)))
+    (emptylist-exp () (emptylist-exp))
+    (zero?-exp (exp1)
+      (zero?-exp (translation-of exp1 senv)))
+    (if-exp (exp1 exp2 exp3)
+      (if-exp (translation-of exp1 senv)
+              (translation-of exp2 senv)
+              (translation-of exp3 senv)))
+    (let-exp (vars vals body)
+      (nameless-let-exp
+        (map (lambda (exp1) (translation-of exp1 senv)) vals)
+        (translation-of body
+                        (extend-senv* vars senv))))
+    (letrec-exp (proc-names vars proc-bodies letrec-body)
+      (value-of letrec-body
+                (extend-env-rec proc-names vars proc-bodies env)))
+    (proc-exp (vars body)
+      (nameless-proc-exp
+        (translation-of body
+                        (extend-senv* vars senv))))
+    (call-exp (rator rands)
+      (call-exp
+        (translation-of rator senv)
+        (map (lambda (rand) (translation-of rand senv))
+             rands)))
+    (else (error "Invalid source expression"))))
+
 (define (run str)
-  (value-of-program (scan&parse str)))
+  (value-of-program
+    (translation-of-program
+      (scan&parse str))))
