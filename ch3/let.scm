@@ -37,9 +37,9 @@
                   (map (lambda (exp1) (value-of exp1 env))
                         vals)
                   env)))
-    (letrec-exp (proc-names vars proc-bodies letrec-body)
+    (nameless-letrec-exp (proc-bodies letrec-body)
       (value-of letrec-body
-                (extend-env-rec proc-names vars proc-bodies env)))
+                (extend-namesless-env-rec proc-bodies env)))
     (nameless-proc-exp (body)
       (proc-val body env))
     (call-exp (rator rands)
@@ -99,8 +99,15 @@
         (translation-of body
                         (extend-senv* vars senv))))
     (letrec-exp (proc-names vars proc-bodies letrec-body)
-      (value-of letrec-body
-                (extend-env-rec proc-names vars proc-bodies env)))
+      (nameless-letrec-exp
+        (map (lambda (vars proc-body)
+               (translation-of proc-body
+                               (extend-senv* vars
+                                             (extend-senv-rec* proc-names senv))))
+             vars
+             proc-bodies)
+        (translation-of letrec-body
+                        (extend-senv-rec* proc-names senv))))
     (proc-exp (vars body)
       (nameless-proc-exp
         (translation-of body

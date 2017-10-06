@@ -20,7 +20,8 @@
 (define (expval->num val)
   (cases expval val
          (num-val (num) num)
-         (else (error "invalid expval -- expval->num" val))))
+         (else
+           (error "invalid expval -- expval->num" val))))
 
 (define (expval->pair val)
   (cases expval val
@@ -72,20 +73,84 @@
                 (extend-env* (cdr vars) (cdr vals) env)))))
 
 
-(define (empty-senv) '())
-(define (extend-senv var senv) (cons var senv))
-(define (extend-senv* vars senv) (append vars senv))
+(define-datatype
+  senvironment senvironment?
+  (empty-senv)
+  (extend-senv
+    (var identifier?)
+    (senvironment senvironment?))
+  (extend-senv-rec*
+    (vars (list-of identifier?))
+    (senvironment senvironment?)))
+(define (extend-senv* vars senv)
+  (if (null? vars)
+      senv
+      (extend-senv (car vars)
+                  (extend-senv* (cdr vars) senv))))
+
 (define (apply-senv senv var)
-  (cond ((null? senv) (error "Unbound var" var))
-        ((eq? var (car senv)) 0)
-        (else (+ 1 (apply-senv (cdr senv) var)))))
+  (cases
+    senvironment senv
+    (empty-senv () (error "Unbound value"))
+    (extend-senv
+      (saved-var saved-senv)
+      (if (eq? var saved-var)
+          0
+          (+ 1 (apply-senv saved-senv var))))
+    (extend-senv-rec*
+      (vars saved-env)
+      (if (memq var vars)
+          (list-index var vars)
+          (+ (length vars) (apply-senv saved-env var))))))
+
+(define (senv-is-letrecced? senv var)
+  (cases
+    senvironment senv
+    (empty-senv () (error "Unbound value"))
+    (extend-senv
+      (saved-var saved-senv)
+      (if (eq? var saved-var)
+          #f
+          (senv-is-letrecced? saved-senv var)))
+    (extend-senv-rec*
+      (vars saved-env)
+      (if (memq var vars)
+          #t
+          (senv-is-letrecced? saved-env var)))))
+
+(define (list-index var vars)
+  (if (null? vars)
+      (error "Not found" var)
+      (if (eq? var (car vars))
+          0
+          (+ 1 (list-index var (cdr vars))))))
 
 
-(define (nameless-environment? x)
-  ((list-of expval?) x))
+(define-datatype
+  nameless-environment nameless-environment?
+  (empty-nameless-env)
+  (extend-namesless-env
+    (val expval?)
+    (env nameless-environment?))
+  (extend-namesless-env-rec
+    (proc-bodies (list-of expression?))
+    (env nameless-environment?)))
 
-(define (empty-nameless-env) '())
-(define (extend-namesless-env val env) (cons val env))
-(define (extend-namesless-env* vals env) (append vals env))
-(define (apply-namesless-env env n) (list-ref env n))
+(define (extend-namesless-env* vals env)
+  (if (null? vals)
+      env
+      (extend-namesless-env (car vals)
+                            (extend-namesless-env* (cdr vals) env))))
+(define (apply-namesless-env env n)
+  (cases
+    nameless-environment env
+    (empty-nameless-env () (error "Unbound value"))
+    (extend-namesless-env (val saved-env)
+      (if (= n 0) val (apply-namesless-env saved-env (- n 1))))
+    (extend-namesless-env-rec
+      (proc-bodies saved-env)
+      (if (< n (length proc-bodies))
+          (let ((body (list-ref proc-bodies n)))
+           (proc-val body env))
+          (apply-namesless-env saved-env (- n (length proc-bodies)))))))
 

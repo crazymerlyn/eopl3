@@ -69,6 +69,10 @@
       letrec-exp)
 
     (expression
+      ("%letrec" (arbno expression) "in" expression)
+      nameless-letrec-exp)
+
+    (expression
       ("proc" "(" (separated-list identifier ",") ")" expression)
       proc-exp)
 
