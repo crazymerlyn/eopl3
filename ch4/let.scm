@@ -79,13 +79,18 @@
     (call-exp (rator rands)
       (apply-procedure
         (value-of rator env)
-        (map (lambda (rand) (value-of rand env))
+        (map (lambda (rand) (value-of-operand rand env))
              rands)))))
+
+(define (value-of-operand rand env)
+  (cases expression rand
+         (var-exp (var) (apply-env env var))
+         (else (newref (value-of rand env)))))
 
 (define (apply-procedure proc vals)
   (cases expval proc
          (proc-val (vars body env)
-                   (value-of body (extend-env* vars (map newref vals) env)))
+                   (value-of body (extend-env* vars vals env)))
          (else (error "Invalid expval -- apply-procedure" proc))))
 
 (define (value-of-program pgm)

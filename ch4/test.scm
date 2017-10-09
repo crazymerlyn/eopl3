@@ -2,5 +2,6 @@
 
 
 (define (test)
-  (run "let x = cons(1,2) in begin {set-car! (x, 3); cdr(x)}"))
+  (run "let swap = proc (x, y) let temp = x in begin {set x = y; set y = temp}
+        in let a = 1 b = 2 in begin {(swap a b); -(a,b)}"))
 
