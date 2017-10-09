@@ -7,7 +7,9 @@
   (cases
     expression exp
     (const-exp (num) (num-val num))
-    (var-exp (var) (deref (apply-env env var)))
+    (var-exp (var)
+      (let ((w (deref (apply-env env var))))
+        (if (expval? w) w (value-of-thunk w))))
     (diff-exp (exp1 exp2)
       (num-val
         (-
@@ -85,7 +87,7 @@
 (define (value-of-operand rand env)
   (cases expression rand
          (var-exp (var) (apply-env env var))
-         (else (newref (value-of rand env)))))
+         (else (newref (a-thunk rand env)))))
 
 (define (apply-procedure proc vals)
   (cases expval proc

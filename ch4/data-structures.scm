@@ -132,3 +132,14 @@
                            (cdr store1) (- ref1 1))))))))
       (setref-inner the-store ref))))
 
+
+(define-datatype
+  thunk thunk?
+  (a-thunk
+    (exp1 expression?)
+    (env environment?)))
+
+(define (value-of-thunk th)
+  (cases thunk th
+         (a-thunk (exp1 env)
+           (value-of exp1 env))))

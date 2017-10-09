@@ -2,6 +2,5 @@
 
 
 (define (test)
-  (run "let swap = proc (x, y) let temp = x in begin {set x = y; set y = temp}
-        in let a = 1 b = 2 in begin {(swap a b); -(a,b)}"))
+  (run "letrec break (x) = (break x) in let f = proc (y) 11 in (f (break 1))"))
 
