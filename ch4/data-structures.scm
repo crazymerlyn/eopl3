@@ -1,4 +1,33 @@
 (define-datatype
+  mutpair mutpair?
+  (a-pair
+    (left-loc reference?)
+    (right-loc reference?)))
+
+(define (make-pair val1 val2)
+  (a-pair (newref val1) (newref val2)))
+
+(define (left p)
+  (cases mutpair p
+         (a-pair (left-loc right-loc)
+           (deref left-loc))))
+
+(define (right p)
+  (cases mutpair p
+         (a-pair (left-loc right-loc)
+           (deref right-loc))))
+
+(define (setleft p val)
+  (cases mutpair p
+         (a-pair (left-loc right-loc)
+           (setref! left-loc val))))
+
+(define (setright p val)
+  (cases mutpair p
+         (a-pair (left-loc right-loc)
+           (setref! right-loc val))))
+
+(define-datatype
   expval expval?
   (num-val
     (num number?))
@@ -7,8 +36,7 @@
   (ref-val
     (ref integer?))
   (pair-val
-    (first expval?)
-    (second expval?))
+    (val mutpair?))
   (proc-val
     (vars list?)
     (body expression?)
@@ -30,9 +58,9 @@
          (ref-val (ref) ref)
          (else (error "invalid expval -- expval->ref" val))))
 
-(define (expval->pair val)
+(define (expval->mutpair val)
   (cases expval val
-         (pair-val (first second) (cons first second))
+         (pair-val (val) val)
          (else (error "invalid listval -- expval->list" val))))
 
 (define (list->pairval vals)
@@ -52,7 +80,7 @@
   (empty-env)
   (extend-env
     (var identifier?)
-    (val number?)
+    (val reference?)
     (env environment?))
   (extend-env-rec
     (p-names list?)

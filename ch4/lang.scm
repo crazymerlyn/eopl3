@@ -42,6 +42,14 @@
       cdr-exp)
 
     (expression
+      ("set-car!" "(" expression "," expression ")")
+      set-car-exp)
+
+    (expression
+      ("set-cdr!" "(" expression "," expression ")")
+      set-cdr-exp)
+
+    (expression
       ("null?" "(" expression ")")
       null?-exp)
 
