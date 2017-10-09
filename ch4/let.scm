@@ -50,6 +50,13 @@
           (apply-env env var)
           (value-of exp1 env))
         (num-val 27)))
+    (dynamic-exp (var exp1 exp2)
+      (let ((original (value-of (var-exp var) env)))
+       (begin
+         (setref! (apply-env env var) (value-of exp1 env))
+         (let ((ans (value-of exp2 env)))
+          (setref! (apply-env env var) original)
+          ans))))
     (begin-exp (exps)
       (cond ((null? exps) (num-val 23))
             ((null? (cdr exps)) (value-of (car exps) env))

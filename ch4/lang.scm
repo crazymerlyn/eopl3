@@ -72,6 +72,10 @@
       assign-exp)
 
     (expression
+      ("setdynamic" identifier "=" expression "during" expression)
+      dynamic-exp)
+
+    (expression
       ("begin" "{" (separated-list expression ";") "}")
       begin-exp)
 
