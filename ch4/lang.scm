@@ -68,8 +68,8 @@
       deref-exp)
 
     (expression
-      ("setref" "(" expression "," expression ")")
-      setref-exp)
+      ("set" identifier "=" expression)
+      assign-exp)
 
     (expression
       ("begin" "{" (separated-list expression ";") "}")

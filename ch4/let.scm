@@ -7,7 +7,7 @@
   (cases
     expression exp
     (const-exp (num) (num-val num))
-    (var-exp (var) (apply-env env var))
+    (var-exp (var) (deref (apply-env env var)))
     (diff-exp (exp1 exp2)
       (num-val
         (-
@@ -34,7 +34,7 @@
     (let-exp (vars vals body)
       (value-of body
                 (extend-env* vars
-                            (map (lambda (exp1) (value-of exp1 env))
+                            (map (lambda (exp1) (newref (value-of exp1 env)))
                                  vals)
                             env)))
     (letrec-exp (proc-names vars proc-bodies letrec-body)
@@ -44,12 +44,12 @@
       (ref-val (newref (value-of exp1 env))))
     (deref-exp (exp1)
       (deref (expval->ref (value-of exp1 env))))
-    (setref-exp (exp1 exp2)
-      (let ((ref (expval->ref (value-of exp1 env))))
-       (let ((val2 (value-of exp2 env)))
-        (begin
-          (setref! ref val2)
-          (num-val 23)))))
+    (assign-exp (var exp1)
+      (begin
+        (setref!
+          (apply-env env var)
+          (value-of exp1 env))
+        (num-val 27)))
     (begin-exp (exps)
       (cond ((null? exps) (num-val 23))
             ((null? (cdr exps)) (value-of (car exps) env))
@@ -66,7 +66,7 @@
 (define (apply-procedure proc vals)
   (cases expval proc
          (proc-val (vars body env)
-                   (value-of body (extend-env* vars vals env)))
+                   (value-of body (extend-env* vars (map newref vals) env)))
          (else (error "Invalid expval -- apply-procedure" proc))))
 
 (define (value-of-program pgm)
