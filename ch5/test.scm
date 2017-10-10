@@ -2,5 +2,5 @@
 
 
 (define (test)
-  (run "let x = 4 y = 2 in -(x,y)"))
+  (run "letrec times4 (n) = if zero?(n) then 0 else -((times4 -(n,1)),-4) in (times4 10)"))
 

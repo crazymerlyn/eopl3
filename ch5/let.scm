@@ -89,14 +89,17 @@
 (define (apply-procedure/k proc vals cont)
   (cases expval proc
          (proc-val (vars body env)
-                   (value-of/k body (extend-env* vars vals env) cont))
+                   (lambda ()  (value-of/k body (extend-env* vars vals env) cont)))
          (else (error "Invalid expval -- apply-procedure" proc))))
 
 (define (value-of-program pgm)
   (initialize-store!)
   (cases program pgm
          (a-program (exp1)
-           (value-of/k exp1 the-global-environment (end-cont)))))
+           (trampoline (value-of/k exp1 the-global-environment (end-cont))))))
+
+(define (trampoline bounce)
+  (if (expval? bounce) bounce (trampoline (bounce))))
 
 (define (run str)
   (value-of-program (scan&parse str)))
