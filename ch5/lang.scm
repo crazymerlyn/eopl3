@@ -61,6 +61,14 @@
       ("if" expression "then" expression "else" expression)
       if-exp)
 
+    (expression
+      ("try" expression "catch" "(" identifier ")" expression)
+      try-exp)
+
+    (expression
+      ("raise" expression)
+      raise-exp)
+
     (expression (identifier) var-exp)
 
     (expression

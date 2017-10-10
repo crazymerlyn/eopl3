@@ -42,6 +42,11 @@
       (value-of/k exp1 env (zero1-cont cont)))
     (if-exp (exp1 exp2 exp3)
       (value-of/k exp1 env (if-test-cont exp2 exp3 env cont)))
+    (try-exp (exp1 var handler-exp)
+      (value-of/k exp1 env
+                  (try-cont var handler-exp env cont)))
+    (raise-exp (exp1)
+      (value-of/k exp1 env (raise1-cont cont)))
     (let-exp (vars vals body)
       (list-value-of/k
         vals
