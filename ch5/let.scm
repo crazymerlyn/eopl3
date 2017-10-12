@@ -35,6 +35,8 @@
         (begin
           (setright (expval->mutpair val1) val2)
           (num-val 83))))
+    (spawn-exp (exp1)
+      (value-of/k exp1 env (spawn-cont cont)))
     (null?-exp (exp1)
       (expval-is-null? (value-of exp1 env)))
     (emptylist-exp () (null-val))
@@ -94,17 +96,48 @@
 (define (apply-procedure/k proc vals cont)
   (cases expval proc
          (proc-val (vars body env)
-                   (lambda ()  (value-of/k body (extend-env* vars vals env) cont)))
+                   (value-of/k body (extend-env* vars vals env) cont))
          (else (error "Invalid expval -- apply-procedure" proc))))
 
-(define (value-of-program pgm)
+(define (value-of-program timeslice pgm)
   (initialize-store!)
+  (initialize-scheduler! timeslice)
   (cases program pgm
          (a-program (exp1)
-           (trampoline (value-of/k exp1 the-global-environment (end-cont))))))
-
-(define (trampoline bounce)
-  (if (expval? bounce) bounce (trampoline (bounce))))
+           (value-of/k exp1 the-global-environment (end-main-thread-cont)))))
 
 (define (run str)
-  (value-of-program (scan&parse str)))
+  (value-of-program 3 (scan&parse str)))
+
+(define the-ready-queue)
+(define the-final-answer)
+(define the-max-time-slice 10)
+(define the-time-remaining 10)
+
+(define (initialize-scheduler! ticks)
+  (set! the-ready-queue (the-empty-queue))
+  (set! the-final-answer 'uninitialized)
+  (set! the-max-time-slice ticks)
+  (set! the-time-remaining the-max-time-slice))
+
+(define (place-on-ready-queue! th)
+  (set! the-ready-queue
+    (enqueue the-ready-queue th)))
+
+(define (run-next-thread)
+  (if (empty? the-ready-queue)
+      the-final-answer
+      (dequeue the-ready-queue
+               (lambda (first-ready-thread other-ready-threads)
+                 (set! the-ready-queue other-ready-threads)
+                 (set! the-time-remaining the-max-time-slice)
+                 (first-ready-thread)))))
+
+(define (set-final-answer! val)
+  (set! the-final-answer val))
+
+(define (time-expired?)
+  (zero? the-time-remaining))
+
+(define (decrement-timer!)
+  (set! the-time-remaining (- the-time-remaining 1)))

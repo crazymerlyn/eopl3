@@ -2,5 +2,6 @@
 
 
 (define (test)
-  (run "let f = proc (n) if zero?(n) then 2 else raise 3 in try (f 1) catch (x) x"))
+  (run "let x = 100 in let y = proc (z) set x = -(x,z)
+        in let d = spawn (proc () (y 1)) in x"))
 

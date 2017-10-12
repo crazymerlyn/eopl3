@@ -66,6 +66,10 @@
       try-exp)
 
     (expression
+      ("spawn" "(" expression ")")
+      spawn-exp)
+
+    (expression
       ("raise" expression)
       raise-exp)
 
