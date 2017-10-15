@@ -58,7 +58,24 @@
                         (check-equal-types! arg-types rand-types rands)
                         result-type))
                     (else
-                      (error "rator not a proc type" rator-type rator)))))))
+                      (error "rator not a proc type" rator-type rator)))))
+         (letrec-exp (p-result-types p-names b-vars
+                                     b-var-types p-bodies letrec-body)
+           (let ((tenv-for-letrec-body
+                   (extend-tenv*
+                     p-names
+                     (map (lambda (args res) (proc-type args res))
+                          b-vars p-result-types)
+                     tenv)))
+             (let ((p-body-types
+                     (map (lambda (p-body b-vars b-var-types)
+                            (type-of p-body
+                                     (extend-tenv*
+                                       b-vars b-var-types
+                                       tenv-for-letrec-body)))
+                          p-bodies b-vars b-var-types)))
+               (check-equal-types! p-body-types p-result-types p-bodies)
+               (type-of letrec-body tenv-for-letrec-body))))))
 
 (define (type-of-program pgm)
   (cases program pgm
