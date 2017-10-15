@@ -12,8 +12,8 @@
   (cases type ty
          (int-type () 'int)
          (bool-type () 'bool)
-         (proc-type (arg-type result-type)
+         (proc-type (arg-types result-type)
            (list
-             (types-to-external-form arg-type)
+             (map types-to-external-form arg-type)
              '->
              (types-to-external-form result-type)))))
