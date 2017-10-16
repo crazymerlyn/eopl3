@@ -14,6 +14,9 @@
 
 (define the-grammar
   '((program (expression) a-program)
+    (type ("int") int-type)
+    (type ("bool") bool-type)
+    (type ("(" (separated-list type ",") "->" type ")") proc-type)
 
     (expression (number) const-exp)
     (expression
@@ -35,11 +38,11 @@
       let-exp)   
 
     (expression
-      ("letrec" (arbno identifier "(" (separated-list identifier ",") ")" "=" expression) "in" expression)
+      ("letrec" (arbno type identifier "(" (separated-list identifier ",") ":" (separated-list type ",") ")" "=" expression) "in" expression)
       letrec-exp)
 
     (expression
-      ("proc" "(" (separated-list identifier ",") ")" expression)
+      ("proc" "(" (separated-list identifier ",") ":" (separated-list type ",") ")" expression)
       proc-exp)
 
     (expression

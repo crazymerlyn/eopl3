@@ -5,6 +5,14 @@
   (if (not (equal? ty1 ty2))
       (report-unequal-types ty1 ty2 exp)))
 
+(define (check-equal-types! tys1 tys2 exps)
+  (cond ((and (null? tys1) (null? tys2)) 'nothing)
+        ((or (null? tys1) (null? tys2)) (error "Wrong number of arguments"))
+        (else
+          (begin
+            (check-equal-type! (car tys1) (car tys2) (car exps))
+            (check-equal-types! (cdr tys1) (cdr tys2) (cdr exps))))))
+
 (define (report-unequal-types ty1 ty2 exp)
   (error "Types didn't match: ~s != ~a in~%~a"
          (types-to-external-form ty1)
@@ -65,7 +73,7 @@
                    (extend-tenv*
                      p-names
                      (map (lambda (args res) (proc-type args res))
-                          b-vars p-result-types)
+                          b-var-types p-result-types)
                      tenv)))
              (let ((p-body-types
                      (map (lambda (p-body b-vars b-var-types)

@@ -1,5 +1,6 @@
 (load "lang.scm")
 (load "data-structures.scm")
+(load "type.scm")
 
 (define the-global-environment (empty-env))
 
@@ -47,4 +48,6 @@
          (a-program (exp1) (value-of exp1 the-global-environment))))
 
 (define (run str)
-  (value-of-program (scan&parse str)))
+  (let ((pgm (scan&parse str)))
+   (type-of-program pgm)
+   (value-of-program pgm)))

@@ -51,3 +51,17 @@
                 (extend-env* (cdr vars) (cdr vals) env)))))
 
 
+(define-datatype type type?
+  (int-type)
+  (bool-type)
+  (proc-type
+    (arg-types (list-of type?))
+    (result-type type?)))
+
+
+(define (init-tenv) '())
+(define (extend-tenv* vars vals tenv)
+  (append (map cons vars vals) tenv))
+(define (apply-tenv tenv var)
+  (cond ((assoc var tenv) => cdr)
+        (else (error "Unbound variable"))))
