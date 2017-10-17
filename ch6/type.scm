@@ -178,9 +178,9 @@
 
 (define (unifier-map tys1 tys2 subst exp)
   (if (null? tys1)
-      #t
-      (and (unifier (car tys1) (car tys2) subst exp)
-           (unifier-map (cdr tys1) (cdr tys2) subst exp))))
+      subst
+      (let ((subst (unifier (car tys1) (car tys2) subst exp)))
+       (unifier-map (cdr tys1) (cdr tys2) subst exp))))
 
 (define (no-occurrence? tvar ty)
   (cases type ty

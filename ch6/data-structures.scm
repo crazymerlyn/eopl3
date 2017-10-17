@@ -92,3 +92,18 @@
   (cases type t
          (tvar-type (sn) #t)
          (else #f)))
+
+(define (proc-type? t)
+  (cases type t
+         (proc-type (a b) #t)
+         (else #f)))
+
+(define (proc-type->arg-types t)
+  (cases type t
+         (proc-type (arg-types r) arg-types)
+         (else (error "Not a procedure type" t))))
+
+(define (proc-type->result-type t)
+  (cases type t
+         (proc-type (a r) r)
+         (else (error "Not a procedure type" t))))
