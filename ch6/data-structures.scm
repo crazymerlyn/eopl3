@@ -51,13 +51,6 @@
                 (extend-env* (cdr vars) (cdr vals) env)))))
 
 
-(define-datatype type type?
-  (int-type)
-  (bool-type)
-  (proc-type
-    (arg-types (list-of type?))
-    (result-type type?)))
-
 
 (define (init-tenv) '())
 (define (extend-tenv* vars vals tenv)
@@ -65,3 +58,37 @@
 (define (apply-tenv tenv var)
   (cond ((assoc var tenv) => cdr)
         (else (error "Unbound variable"))))
+
+(define (empty-subst) '())
+(define (extend-subst subst tvar ty)
+  (cons
+    (cons tvar ty)
+    (map
+      (lambda (p)
+        (let ((oldlhs (car p))
+              (oldrhs (cdr p)))
+          (cons oldlhs (apply-one-subst oldrhs tvar ty))))
+      subst)))
+
+(define substitution? list?)
+
+(define (otype->type otype)
+  (cases optional-type otype
+         (no-type () (fresh-tvar-type))
+         (a-type (ty) ty)))
+
+(define fresh-tvar-type
+  (let ((sn 0))
+   (lambda ()
+     (set! sn (+ sn 1))
+     (tvar-type sn))))
+
+(define-datatype answer answer?
+  (an-answer
+    (ty type?)
+    (subst substitution?)))
+
+(define (tvar-type? t)
+  (cases type t
+         (tvar-type (sn) #t)
+         (else #f)))

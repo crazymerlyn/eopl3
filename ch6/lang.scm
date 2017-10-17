@@ -17,6 +17,10 @@
     (type ("int") int-type)
     (type ("bool") bool-type)
     (type ("(" (separated-list type ",") "->" type ")") proc-type)
+    (type ("%tvar-type" number) tvar-type)
+
+    (optional-type ("?") no-type)
+    (optional-type (type) a-type)
 
     (expression (number) const-exp)
     (expression
@@ -38,11 +42,11 @@
       let-exp)   
 
     (expression
-      ("letrec" (arbno type identifier "(" (separated-list identifier ",") ":" (separated-list type ",") ")" "=" expression) "in" expression)
+      ("letrec" (arbno optional-type identifier "(" (separated-list identifier ",") ":" (separated-list optional-type ",") ")" "=" expression) "in" expression)
       letrec-exp)
 
     (expression
-      ("proc" "(" (separated-list identifier ",") ":" (separated-list type ",") ")" expression)
+      ("proc" "(" (separated-list identifier ",") ":" (separated-list optional-type ",") ")" expression)
       proc-exp)
 
     (expression

@@ -2,5 +2,5 @@
 
 
 (define (test)
-  (type-of-program (scan&parse "let a = 5 in zero?(a)")))
+  (types-to-external-form (type-of-program (scan&parse "proc(x,y:?,?) if x then x else y"))))
 
