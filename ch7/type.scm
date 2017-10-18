@@ -31,7 +31,14 @@
          (tvar-type (sn)
            (string->symbol
              (string-append
-               "ty" (number->string sn))))))
+               "ty" (number->string sn))))
+         (named-type (name) name)
+         (qualified-type (m-name t-name)
+           (string->symbol
+             (string-append
+               (symbol->string m-name)
+               "::"
+               (symbol->string t-name))))))
 
 (define (type-of exp tenv subst)
   (cases expression exp
@@ -145,7 +152,8 @@
              (map (lambda (arg-type) (apply-one-subst arg-type tvar ty1))
                   arg-types)
              (apply-one-subst result-type tvar ty1)))
-         (tvar-type (sn) (if (equal? ty0 tvar) ty1 ty0))))
+         (tvar-type (sn) (if (equal? ty0 tvar) ty1 ty0))
+         (else ty0)))
 
 (define (apply-subst-to-type ty subst)
   (cases type ty
@@ -158,7 +166,8 @@
              (apply-subst-to-type result-type subst)))
          (tvar-type (sn)
            (let ((tmp (assoc ty subst)))
-            (if tmp (cdr tmp) ty)))))
+            (if tmp (cdr tmp) ty)))
+         (else ty)))
 
 (define (unifier ty1 ty2 subst exp)
   (let ((ty1 (apply-subst-to-type ty1 subst))
@@ -194,7 +203,8 @@
            (and
              (no-occurrence?-map tvar arg-types)
              (no-occurrence? tvar result-type)))
-         (tvar-type (sn) (not (equal? tvar ty)))))
+         (tvar-type (sn) (not (equal? tvar ty)))
+         (else (error "Unsupported no-occurrence?" ty))))
 
 (define (no-occurrence?-map tvar tys)
   (not (any (map (lambda (ty) (no-occurrence? tvar ty)) tys))))

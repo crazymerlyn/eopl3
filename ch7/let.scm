@@ -73,7 +73,9 @@
              (val-defn (var exp)
                (let ((val (value-of exp env)))
                 (let ((new-env (extend-env var val env)))
-                 (extend-env var val (defns-to-env (cdr defns) new-env))))))))
+                 (extend-env var val (defns-to-env (cdr defns) new-env)))))
+             (type-defn (type-name ty)
+               (defns-to-env (cdr defns) env)))))
 
 (define (run str)
   (let ((pgm (scan&parse str)))

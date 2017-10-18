@@ -17,6 +17,8 @@
     (type ("int") int-type)
     (type ("bool") bool-type)
     (type ("(" (separated-list type ",") "->" type ")") proc-type)
+    (type (identifier) named-type)
+    (type ("from" identifier "take" identifier) qualified-type)
     (type ("%tvar-type" number) tvar-type)
 
     (optional-type ("?") no-type)
@@ -27,10 +29,13 @@
       a-module-definition)
 
     (decl (identifier ":" type) val-decl)
+    (decl ("opaque" identifier) opaque-type-decl)
+    (decl ("transparent" identifier "=" type) transparent-type-decl)
     (interface ("[" (arbno decl) "]") simple-iface)
 
     (module-body ("[" (arbno definition) "]") defns-module-body)
     (definition (identifier "=" expression) val-defn)
+    (definition ("type" identifier "=" type) type-defn)
 
     (expression (number) const-exp)
     (expression
