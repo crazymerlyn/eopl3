@@ -188,6 +188,10 @@
     (field-names (list-of identifier?))
     (method-env method-environment?)))
 
+(define (class->super-name cl)
+  (cases class cl
+         (a-class (super-name field-names b) super-name)))
+
 (define (class->field-names cl)
   (cases class cl
          (a-class (a field-names b) field-names)))
@@ -195,6 +199,13 @@
 (define (class->method-env cl)
   (cases class cl
          (a-class (a b method-env) method-env)))
+
+(define (is-subclass? c1 c2)
+  (cond ((eq? c1 c2) #t)
+        (else
+          (let ((s-name (class->super-name
+                          (lookup-class c1))))
+            (if s-name (is-subclass? s-name c2) #f)))))
 
 (define (find-method c-name name)
   (let ((m-env (class->method-env (lookup-class c-name))))

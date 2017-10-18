@@ -36,6 +36,14 @@
       ("super" identifier "(" (separated-list expression ",") ")")
       super-call-exp)
 
+    (expression
+      ("instanceof" expression identifier)
+      instanceof-exp)
+
+    (expression
+      ("cast" expression identifier)
+      cast-exp)
+
     (expression ("self") self-exp)
 
     (expression (number) const-exp)

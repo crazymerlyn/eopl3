@@ -54,6 +54,16 @@
           obj
           args)
         obj))
+    (cast-exp (exp c-name)
+      (let ((obj (value-of exp env)))
+       (if (is-subclass? (object->class-name obj) c-name)
+           obj
+           (error "Can't cast" exp obj c-name))))
+    (instanceof-exp (exp c-name)
+      (let ((obj (value-of exp env)))
+       (if (is-subclass? (object->class-name obj) c-name)
+           (bool-val #t)
+           (bool-val #f))))
     (zero?-exp (exp1)
       (bool-val (zero? (expval->num (value-of exp1 env)))))
     (if-exp (exp1 exp2 exp3)
