@@ -32,8 +32,14 @@
     (decl ("opaque" identifier) opaque-type-decl)
     (decl ("transparent" identifier "=" type) transparent-type-decl)
     (interface ("[" (arbno decl) "]") simple-iface)
+    (interface ("(" "(" identifier ":" interface ")" "=>" interface ")") proc-iface)
 
     (module-body ("[" (arbno definition) "]") defns-module-body)
+    (module-body
+      ("module-proc" "(" identifier ":" interface ")" module-body)
+      proc-module-body)
+    (module-body (identifier) var-module-body)
+    (module-body ("(" identifier identifier ")") app-module-body)
     (definition (identifier "=" expression) val-defn)
     (definition ("type" identifier "=" type) type-defn)
 

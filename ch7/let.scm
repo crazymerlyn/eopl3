@@ -64,8 +64,20 @@
 
 (define (value-of-module-body m-body env)
   (cases module-body m-body
-         (defns-module-body (defns)
-           (simple-module (defns-to-env defns env)))))
+    (defns-module-body (defns)
+      (simple-module (defns-to-env defns env)))
+    (var-module-body (m-name)
+      (lookup-module-name-in-env env m-name))
+    (proc-module-body (m-name m-type m-body)
+      (proc-module m-name m-body env))
+    (app-module-body (rator rand)
+      (let ((rator-val (lookup-module-name-in-env env rator))
+            (rand-val (lookup-module-name-in-env env rand)))
+        (cases typed-module rator-val
+          (proc-module (m-name m-body saved-env)
+            (value-of-module-body
+              m-body (extend-env-with-module m-name rand-val saved-env)))
+          (else (error "Not a proc-module" rator-val)))))))
 
 (define (defns-to-env defns env)
   (if (null? defns)
