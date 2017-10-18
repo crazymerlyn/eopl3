@@ -9,6 +9,7 @@
     expression exp
     (const-exp (num) (num-val num))
     (var-exp (var) (apply-env env var))
+    (qualified-var-exp (m-name var) (lookup-qualified-var-in-env m-name var env))
     (diff-exp (exp1 exp2)
       (num-val
         (-
@@ -26,10 +27,10 @@
                             (map (lambda (exp1) (value-of exp1 env))
                                  vals)
                             env)))
-    (letrec-exp (proc-names vars proc-bodies letrec-body)
+    (letrec-exp (result-types proc-names vars var-types proc-bodies letrec-body)
       (value-of letrec-body
                 (extend-env-rec proc-names vars proc-bodies env)))
-    (proc-exp (vars body)
+    (proc-exp (vars var-types body)
       (proc-val vars body env))
     (call-exp (rator rands)
       (apply-procedure
@@ -79,5 +80,6 @@
 
 (define (run str)
   (let ((pgm (scan&parse str)))
-   (type-of-program pgm)
+   (display (types-to-external-form (type-of-program pgm)))
+   (newline)
    (value-of-program pgm)))

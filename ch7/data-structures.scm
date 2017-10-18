@@ -45,7 +45,9 @@
          (extend-env-rec (p-names b-vars bodies saved-env)
            (cond ((assoc var (map list p-names b-vars bodies))
                   => (lambda (struct) (proc-val (cadr struct) (caddr struct) env)))
-               (else (apply-env saved-env var))))))
+               (else (apply-env saved-env var))))
+         (extend-env-with-module (m-name m-val saved-env)
+           (apply-env saved-env var))))
 
 (define (extend-env* vars vals env)
   (cond ((and (null? vars) (null? vals)) env)
@@ -301,14 +303,16 @@
     (bindings environment?)))
 
 (define (lookup-qualified-var-in-env m-name var-name env)
-  (let ((m-val (lookup-module-name-in-env m-name env)))
+  (let ((m-val (lookup-module-name-in-env env m-name)))
    (cases typed-module m-val
           (simple-module (bindings) (apply-env bindings var-name)))))
 
 (define (lookup-module-name-in-env env m-name)
   (cases environment env
-    (init-env () (error "Module not found" m-name))
+    (empty-env () (error "Module not found" m-name))
     (extend-env (var val saved-env)
+      (lookup-module-name-in-env saved-env m-name))
+    (extend-env-rec (names vars bodies saved-env)
       (lookup-module-name-in-env saved-env m-name))
     (extend-env-with-module (name interface saved-env)
       (if (eqv? name m-name)
